@@ -1,0 +1,141 @@
+'scopeName': 'source.sleet'
+'name': 'Sleet'
+'fileTypes': ['sleet', 'st']
+'patterns': [
+	'comment': 'cmment block'
+	'begin': '^(\\s*)#\\.\\s*$'
+	'beginCaptures':
+		'1': 'comment.line.indent.sleet'
+	'end': '^(?!\\1\\s+|$)'
+	'name': 'comment.block.sleet'
+,
+	'comment': 'single line comment'
+	'match': '^\\s*#(.*)'
+	'name': 'comment.line.sleet'
+,
+	'include': '#text-block'
+,
+	'include': '#coffee'
+,
+	'include': '#script'
+,
+	'include': '#markdown'
+,
+	'include': '#tag'
+]
+'repository':
+	'tag':
+		'begin': '(\\s*)([\\w$@_-]*)?([\\.#\\w$@_\\-]*[\\w$@_-])?'
+		'beginCaptures':
+			'2': 'name': 'entity.name.tag.sleet'
+			'3': 'name': 'entity.other.attribute-name.sleet'
+		'end': '^(?!\\1\\s+|$)'
+		'patterns': [
+			'include': '#attribute'
+		,
+			'include': '#predict'
+		,
+			'include': '#comment'
+		,
+			'include': '#comment-block'
+		,
+			'include': '#inline-tag'
+		,
+			'include': '#text-inline'
+		,
+			'include': '#coffee'
+		,
+			'include': '#script'
+		,
+			'include': '#markdown'
+		,
+			'include': '#text-block'
+		,
+			'include': '#tag'
+		]
+	'attribute':
+		'begin': '\\(\\s*'
+		'beginCaptures': '0': 'name': 'punctuation.definition.attribute.start.sleet'
+		'end': '\\s*\\)'
+		'endCaptures': '0': 'name': 'punctuation.definition.attribute.end.sleet'
+		'name': 'entity.name.attribute.sleet'
+		'patterns': [
+			'include': '#attr-plus'
+		,
+			'include': '#attr'
+		]
+	'attr':
+		'match': '([\'\"\\w$@_.-]*)(?:(\\s*=\\s*)(\'[^\']*\'|\"[^\"]*\"|[^\\s\\)]*)\\s*)?\\s*'
+		'captures':
+			'1': 'name': 'entity.other.attribute-name.sleet'
+			'2': 'name': 'punctuation.definition.attribute.equals.sleet'
+			'3': 'name': 'string.quoted.sleet'
+	'attr-plus':
+		'match': '\\s*(\\+)\\s*(?:\'[^\']*\'|\"[^\"]*\"|[^\\s\\)]*)\\s*'
+		'name': 'string.quoted.sleet'
+		'captures': '1': 'name': 'punctuation.definition.attribute.plus.sleet'
+	'predict':
+		'match': '\\s*\\&\\s*[\w$@_-]*'
+		'name': 'punctuation.definition.predict.sleet'
+	'text-block':
+		'begin': '(\\s*)([\\w$@_-]*)?([\\.#\\w$@_\\-]*[\\w$@_-])?(?=.*\\.\\s*$)'
+		'beginCaptures':
+			'2': 'name': 'entity.name.tag.sleet'
+			'3': 'name': 'entity.other.attribute-name.sleet'
+		'end': '^(?!\\1\\s+|$)'
+		'patterns': [
+			'include': '#text-block-line'
+		]
+	'text-block-line':
+		'begin': '(?=.*\\.\\s*$)'
+		'end': '\\.\\s*$'
+		'patterns': [
+			'include': '#attribute'
+		,
+			'include': '#predict'
+		,
+			'include': '#inline-tag'
+		]
+	'text-inline':
+		'match': '(?<=\\S)\\s+.*$'
+	'comment':
+		'match': '^\\s*#(?!\\.).*'
+		'name': 'comment.line.sleet'
+	'comment-block':
+		'begin': '^(\\s*)#\\.\\s*$'
+		'beginCaptures':
+			'1': 'comment.line.indent.sleet'
+		'end': '^(?!\\1\\s+|$)'
+		'name': 'comment.block.sleet'
+	'inline-tag':
+		'match': ':\\s*'
+		'name': 'punctuation.definition.tag.inline.sleet'
+	'coffee':
+		'begin': '(\\s*)(coffee)(?=.*\\.\\s*$)'
+		'beginCaptures': '2': 'name': 'entity.name.tag.sleet'
+		'end': '^(?!\\1\\s+|$)'
+		'patterns': [
+			'include': '#text-block-line'
+		,
+			'include': 'source.coffee'
+		]
+	'markdown':
+		'begin': '(\\s*)(markdown)(?=.*\\.\\s*$)'
+		'beginCaptures': '2': 'name': 'entity.name.tag.sleet'
+		'end': '^(?!\\1\\s+|$)'
+		'patterns': [
+			'include': '#text-block-line'
+		,
+			'include': 'source.gfm'
+		,
+			'include': 'text.html.markdown'
+		]
+	'script':
+		'begin': '(\\s*)(script)(?=.*\\.\\s*$)'
+		'beginCaptures': '2': 'name': 'entity.name.tag.sleet'
+		'end': '^(?!\\1\\s+|$)'
+		'patterns': [
+			'include': '#text-block-line'
+		,
+			'include': 'source.js'
+		]

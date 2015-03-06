@@ -1,0 +1,22 @@
+# See https://atom.io/docs/latest/creating-a-package#menus for more details
+'context-menu':
+  'atom-text-editor': [
+    {
+      'label': 'Toggle atom-sleet'
+      'command': 'atom-sleet:toggle'
+    }
+  ]
+'menu': [
+  {
+    'label': 'Packages'
+    'submenu': [
+      'label': 'atom-sleet'
+      'submenu': [
+        {
+          'label': 'Toggle'
+          'command': 'atom-sleet:toggle'
+        }
+      ]
+    ]
+  }
+]

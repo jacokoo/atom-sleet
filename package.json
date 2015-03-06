@@ -1,0 +1,16 @@
+{
+  "name": "atom-sleet",
+  "main": "./lib/atom-sleet",
+  "version": "0.0.0",
+  "description": "A short description of your package",
+  "activationCommands": {
+    "atom-workspace": "atom-sleet:toggle"
+  },
+  "repository": "https://github.com/atom/atom-sleet",
+  "license": "MIT",
+  "engines": {
+    "atom": ">0.50.0"
+  },
+  "dependencies": {
+  }
+}
