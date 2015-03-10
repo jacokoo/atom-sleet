@@ -12,7 +12,7 @@
     "coffee-script": "^1.9.1",
     "marked": "^0.3.3",
     "sleet": "0.0.x",
-    "sleet-handlebars": "^0.0.3",
+    "sleet-handlebars": "0.0.x",
     "uglify-js": "^2.4.16"
   }
 }

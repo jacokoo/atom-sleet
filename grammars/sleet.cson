@@ -10,7 +10,7 @@
 	'name': 'comment.block.sleet'
 ,
 	'comment': 'single line comment'
-	'match': '^\\s*#(.*)'
+	'match': '^\\s*#\\s+(.*)'
 	'name': 'comment.line.sleet'
 ,
 	'include': '#attribute'
