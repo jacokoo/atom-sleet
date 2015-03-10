@@ -1,9 +1,9 @@
 {
   "name": "atom-sleet",
   "main": "./lib/atom-sleet",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "description": "A short description of your package",
-  "repository": "https://github.com/atom/atom-sleet",
+  "repository": "https://github.com/JacoKoo/atom-sleet.git",
   "license": "MIT",
   "engines": {
     "atom": ">0.50.0"
