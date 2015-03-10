@@ -1,25 +1,28 @@
-module.exports =
-class AtomSleetView
-  constructor: (serializeState) ->
-    # Create root element
-    @element = document.createElement('div')
-    @element.classList.add('atom-sleet')
+{TextEditor} = require 'atom'
+{compileToEditor, isSleet} = require './helper'
 
-    # Create message element
-    message = document.createElement('div')
-    message.textContent = "The AtomSleet package is Alive! It's ALIVE!"
-    message.classList.add('message')
-    @element.appendChild(message)
+module.exports = class AtomSleetView extends TextEditor
+    constructor: ->
+        super
+        @listener = atom.commands.add 'atom-workspace', 'core:save': =>
+            @setSourceEditor atom.workspace.getActiveTextEditor()
 
-  # Returns an object that can be retrieved when package is activated
-  serialize: ->
+    getTitle: ->
+        'Sleet Preview' + (if @source then ' - ' + @source.getTitle() else '')
 
-  # Tear down any state and detach
-  destroy: ->
-    @element.remove()
+    setSourceEditor: (editor) ->
+        return unless editor and isSleet(editor)
+        return if editor is @source
 
-  getElement: ->
-    @element
+        if @sourceListener
+            @sourceListener.dispose()
+            @sourceListener = null
 
-class B
-    hello: ->
+        @source = editor
+        @sourceListener = @source.onDidSave => compileToEditor @source, @
+        compileToEditor @source, @
+
+    destroyed: ->
+        @sourceListener?.dispose()
+        @listener.dispose()
+        super

@@ -1,33 +1,68 @@
 AtomSleetView = require './atom-sleet-view'
+{sleetConfig, isSleet, compileToFile, haveCompiledFile} = require './helper'
 {CompositeDisposable} = require 'atom'
+path = require 'path'
 
 module.exports = AtomSleet =
-  atomSleetView: null
-  modalPanel: null
-  subscriptions: null
+    config:
+        compileUse:
+            type: 'string'
+            default: 'sleet'
+            enmu: ['sleet', 'sleet-handlebars']
+        handlebarsBlockHelpers:
+            type: 'array'
+            default: []
+        handlebarsInlineHelpers:
+            type: 'array'
+            default: []
+        handlebarsPrecompile:
+            type: 'boolean'
+            default: false
+        handlebarsPrecompileUseAmd:
+            type: 'boolean'
+            default: false
+        handlebarsPrecompileUseCommonJs:
+            type: 'boolean'
+            default: false
 
-  activate: (state) ->
-    @atomSleetView = new AtomSleetView(state.atomSleetViewState)
-    @modalPanel = atom.workspace.addModalPanel(item: @atomSleetView.getElement(), visible: false)
+    activate: (state) ->
+        @subscriptions = new CompositeDisposable()
 
-    # Events subscribed to in atom's system can be easily cleaned up with a CompositeDisposable
-    @subscriptions = new CompositeDisposable
+        # Register command that toggles this view
+        @subscriptions.add atom.commands.add 'atom-workspace', 'atom-sleet:compile': => @compile()
+        @subscriptions.add atom.commands.add 'atom-workspace', 'core:save': => @whenDidSave()
 
-    # Register command that toggles this view
-    @subscriptions.add atom.commands.add 'atom-workspace', 'atom-sleet:toggle': => @toggle()
+        @subscriptions.add atom.workspace.addOpener (uri) =>
+            editor = if uri is 'atom-sleet://previewer' then @sleetView else null
+            editor
 
-  deactivate: ->
-    @modalPanel.destroy()
-    @subscriptions.dispose()
-    @atomSleetView.destroy()
+    deactivate: ->
+        @subscriptions.dispose()
 
-  serialize: ->
-    atomSleetViewState: @atomSleetView.serialize()
+    whenDidSave: ->
+        activeEditor = atom.workspace.getActiveTextEditor()
+        return unless isSleet activeEditor
+        file = activeEditor.getPath()
+        return unless haveCompiledFile file
+        compileToFile activeEditor
 
-  toggle: ->
-    console.log 'AtomSleet was toggled!'
+    compile: ->
+        activeEditor = atom.workspace.getActiveTextEditor()
+        return unless isSleet activeEditor
+        compileToFile activeEditor
 
-    if @modalPanel.isVisible()
-      @modalPanel.hide()
-    else
-      @modalPanel.show()
+        @preview activeEditor
+
+    preview: (editor) ->
+        return @sleetView.setSourceEditor editor if @sleetView
+
+        @sleetView = new AtomSleetView({})
+        listener = @sleetView.onDidDestroy =>
+            @sleetView = null
+            listener.dispose()
+
+        atom.workspace.open 'atom-sleet://previewer',
+            split: 'right'
+            activatePane: true
+        .then =>
+            @sleetView.setSourceEditor editor

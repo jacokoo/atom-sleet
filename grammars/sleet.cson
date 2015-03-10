@@ -81,7 +81,7 @@
 	'text-inline':
 		'match': '(?<=\\S)\\s+.*$'
 	'coffee':
-		'begin': '(\\s*)(?=.*\\bcoffee\\b.*\\.\\s*$)'
+		'begin': '(\\s+)(?=.*\\bcoffee\\b.*\\.\\s*$)'
 		'end': '^(?!\\1\\s+|$)'
 		'patterns': [
 			'include': '#text-block-line'
@@ -89,7 +89,7 @@
 			'include': 'source.coffee'
 		]
 	'markdown':
-		'begin': '(\\s*)(?=.*\\bmarkdown\\b.*\\.\\s*$)'
+		'begin': '(\\s+)(?=.*\\bmarkdown\\b.*\\.\\s*$)'
 		'end': '^(?!\\1\\s+|$)'
 		'patterns': [
 			'include': '#text-block-line'
@@ -99,7 +99,7 @@
 			'include': 'text.html.markdown'
 		]
 	'script':
-		'begin': '(\\s*)(?=.*\\bscript\\b.*\\.\\s*$)'
+		'begin': '(\\s+)(?=.*\\bscript\\b.*\\.\\s*$)'
 		'end': '^(?!\\1\\s+|$)'
 		'patterns': [
 			'include': '#text-block-line'

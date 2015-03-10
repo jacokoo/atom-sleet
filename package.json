@@ -1,16 +1,18 @@
 {
   "name": "atom-sleet",
   "main": "./lib/atom-sleet",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "A short description of your package",
-  "activationCommands": {
-    "atom-workspace": "atom-sleet:toggle"
-  },
   "repository": "https://github.com/atom/atom-sleet",
   "license": "MIT",
   "engines": {
     "atom": ">0.50.0"
   },
   "dependencies": {
+    "coffee-script": "^1.9.1",
+    "marked": "^0.3.3",
+    "sleet": "0.0.x",
+    "sleet-handlebars": "^0.0.3",
+    "uglify-js": "^2.4.16"
   }
 }
