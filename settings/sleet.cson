@@ -1,0 +1,4 @@
+'.source.sleet':
+    editor:
+        commentStart: '# '
+        decreaseIndentPattern: '^\\s*\\)'

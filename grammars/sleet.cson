@@ -1,108 +1,158 @@
-'scopeName': 'source.sleet'
-'name': 'Sleet'
-'fileTypes': ['sleet', 'st']
-'patterns': [
-	'comment': 'cmment block'
-	'begin': '^(\\s*)#\\.\\s*$'
-	'beginCaptures':
-		'1': 'comment.line.indent.sleet'
-	'end': '^(?!\\1\\s+|$)'
-	'name': 'comment.block.sleet'
+scopeName: 'source.sleet'
+name: 'Sleet'
+fileTypes: ['sleet', 'st']
+patterns: [
+    match: '[^\\w\\|=+\'\"\\s():>#&@$_.-]'
+    name: 'invalid.illegal.sleet'
 ,
-	'comment': 'single line comment'
-	'match': '^\\s*#\\s+(.*)'
-	'name': 'comment.line.sleet'
+    begin: '^(\\s*)#\\.\\s*$'
+    end: '^(?!\\1\\s+|$)'
+    name: 'comment.block.sleet'
 ,
-	'include': '#attribute'
+    match: '^\\s*#\\s+(.*)$'
+    name: 'comment.line.sleet'
 ,
-	'include': '#predict'
+    begin: '^(\\s*)\\|\\.\\s*$'
+    end: '^(?!\\1\\s+|$)'
+    comment: 'pipeline text block'
 ,
-	'include': '#coffee'
+    match: '^(\\s*)\\|\\s+.*$'
+    comment: 'pipeline text'
 ,
-	'include': '#script'
+    include: '#coffee'
 ,
-	'include': '#markdown'
+    include: '#coffee-inline'
 ,
-	'include': '#text-block'
+    include: '#markdown'
 ,
-	'include': '#text-inline'
+    include: '#markdown-inline'
 ,
-	'include': '#tag'
+    include: '#script'
+,
+    include: '#script-inline'
+,
+    begin: '^(\\s*)([\\w$@_-]*)(([.#][\\w$@_-]*)*)(?=.*\\s*\\.\\s*$)'
+    beginCaptures:
+        2: name: 'entity.name.tag.sleet'
+        3: name: 'entity.other.attribute-name.sleet'
+    end: '^(?!(\\1\\s)|\\s*$)'
+    patterns: [
+        include: '#line-end-with-dot'
+    ]
+,
+    include: '#tag'
+,
+    include: '#attribute'
+,
+    match: '&([\\w$@_-]+)\\(([^)]*)\\)'
+    name: 'entity.name.attribute.sleet'
+    captures:
+        1: name: 'entity.other.attribute-name.sleet'
+        2: name: 'string.quoted.sleet'
+,
+    match: '(?<=\\S)\\s+.*$'
+    comment: 'inline text'
 ]
-'repository':
-	'tag':
-		'match': ':?\\s*([\\w$@_-]*)?([\\.#\\w$@_\\-]*[\\w$@_-])?'
-		'captures':
-			'1': 'name': 'entity.name.tag.sleet'
-			'2': 'name': 'entity.other.attribute-name.sleet'
-	'attribute':
-		'begin': '\\(\\s*'
-		'beginCaptures': '0': 'name': 'punctuation.definition.attribute.start.sleet'
-		'end': '\\s*\\)'
-		'endCaptures': '0': 'name': 'punctuation.definition.attribute.end.sleet'
-		'name': 'entity.name.attribute.sleet'
-		'patterns': [
-			'include': '#attr-plus'
-		,
-			'include': '#attr'
-		]
-	'attr':
-		'match': '([\'\"\\w$@_.-]*)(?:(\\s*=\\s*)(\'[^\']*\'|\"[^\"]*\"|[^\\s\\)]*)\\s*)?\\s*'
-		'captures':
-			'1': 'name': 'entity.other.attribute-name.sleet'
-			'2': 'name': 'punctuation.definition.attribute.equals.sleet'
-			'3': 'name': 'string.quoted.sleet'
-	'attr-plus':
-		'match': '\\s*(\\+)\\s*(?:\'[^\']*\'|\"[^\"]*\"|[^\\s\\)]*)\\s*'
-		'name': 'string.quoted.sleet'
-		'captures': '1': 'name': 'punctuation.definition.attribute.plus.sleet'
-	'predict':
-		'match': '\\s*\\&\\s*[\w$@_-]*'
-		'name': 'punctuation.definition.predict.sleet'
-	'text-block':
-		'begin': '(\\s*)([\\w$@_-]*)?([\\.#\\w$@_\\-]*[\\w$@_-])?(?=.*\\.\\s*$)'
-		'beginCaptures':
-			'2': 'name': 'entity.name.tag.sleet'
-			'3': 'name': 'entity.other.attribute-name.sleet'
-		'end': '^(?!\\1\\s+|$)'
-		'patterns': [
-			'include': '#text-block-line'
-		]
-	'text-block-line':
-		'begin': '\\G'
-		'end': '\\.\\s*$'
-		'patterns': [
-			'include': '#attribute'
-		,
-			'include': '#predict'
-		,
-			'include': '#tag'
-		]
-	'text-inline':
-		'match': '(?<=\\S)\\s+.*$'
-	'coffee':
-		'begin': '(\\s+)(?=.*\\bcoffee\\b.*\\.\\s*$)'
-		'end': '^(?!\\1\\s+|$)'
-		'patterns': [
-			'include': '#text-block-line'
-		,
-			'include': 'source.coffee'
-		]
-	'markdown':
-		'begin': '(\\s+)(?=.*\\bmarkdown\\b.*\\.\\s*$)'
-		'end': '^(?!\\1\\s+|$)'
-		'patterns': [
-			'include': '#text-block-line'
-		,
-			'include': 'source.gfm'
-		,
-			'include': 'text.html.markdown'
-		]
-	'script':
-		'begin': '(\\s+)(?=.*\\bscript\\b.*\\.\\s*$)'
-		'end': '^(?!\\1\\s+|$)'
-		'patterns': [
-			'include': '#text-block-line'
-		,
-			'include': 'source.js'
-		]
+repository:
+    tag:
+        match: '(^\\s*|\\s*[:>+]\\s*)([\\w$@_-]*)(([.#][\\w$@_-]+)*)'
+        captures:
+            2: name: 'entity.name.tag.sleet'
+            3: name: 'entity.other.attribute-name.sleet'
+
+    attribute:
+        begin: '\\('
+        beginCaptures: 0: name: 'punctuation.definition.attribute.start.sleet'
+        end: '\\)'
+        endCaptures: 0: name: 'punctuation.definition.attribute.end.sleet'
+        patterns: [
+            match: '[^\\w=+\'\"\\s@$,_.-]'
+            name: 'invalid.illegal.sleet'
+        ,
+            match: '(\\s*[=+]\\s*)(\'[^\']*\'|\"[^\"]*\"|[\\w$@_.-]*),?\\s*'
+            captures:
+                1: name: 'punctuation.definition.attribute.equals.sleet'
+                2: name: 'string.quoted.sleet'
+        ,
+            match: '(\'[^\']*\'|\"[^\"]*\"|[\\w$@_.-]*),?\\s*'
+            captures:
+                1: name: 'entity.other.attribute-name.sleet'
+        ]
+        name: 'entity.name.attribute.sleet'
+
+    'line-end-with-dot':
+        begin: '\\G(?=\\S)'
+        end: '\\.\\s*$'
+        patterns: [
+            include: '#tag'
+        ,
+            include: '#attribute'
+        ]
+
+    coffee:
+        begin: '(\\s*)(coffee)(?=.*\\.\\s*$)'
+        beginCaptures:
+            2: name: 'entity.name.tag.sleet'
+        end: '^(?!(\\1\\s)|\\s*$)'
+        patterns: [
+            include: '#line-end-with-dot'
+        ,
+            include: 'source.coffee'
+        ]
+    'coffee-inline':
+        begin: '(\\s*)(([\\w$@_-]*)([.#][\\w$@_-]*)*)(?=.*coffee.*\\.\\s*$)'
+        beginCaptures:
+            3: name: 'entity.name.tag.sleet'
+            4: name: 'entity.other.attribute-name.sleet'
+        end: '^(?!(\\1\\s)|\\s*$)'
+        patterns: [
+            include: '#line-end-with-dot'
+        ,
+            include: 'source.coffee'
+        ]
+    markdown:
+        begin: '(\\s*)(markdown)(?=.*\\.\\s*$)'
+        beginCaptures:
+            2: name: 'entity.name.tag.sleet'
+        end: '^(?!(\\1\\s)|\\s*$)'
+        patterns: [
+            include: '#line-end-with-dot'
+        ,
+            include: 'source.gfm'
+        ,
+            include: 'text.html.markdown'
+        ]
+    'markdown-inline':
+        begin: '(\\s*)(([\\w$@_-]*)([.#][\\w$@_-]*)*)(?=.*markdown.*\\.\\s*$)'
+        beginCaptures:
+            3: name: 'entity.name.tag.sleet'
+            4: name: 'entity.other.attribute-name.sleet'
+        end: '^(?!(\\1\\s)|\\s*$)'
+        patterns: [
+            include: '#line-end-with-dot'
+        ,
+            include: 'source.gfm'
+        ,
+            include: 'text.html.markdown'
+        ]
+    script:
+        begin: '(\\s*)(script)(?=.*\\.\\s*$)'
+        beginCaptures:
+            2: name: 'entity.name.tag.sleet'
+        end: '^(?!(\\1\\s)|\\s*$)'
+        patterns: [
+            include: '#line-end-with-dot'
+        ,
+            include: 'source.js'
+        ]
+    'script-inline':
+        begin: '(\\s*)(([\\w$@_-]*)([.#][\\w$@_-]*)*)(?=.*script.*\\.\\s*$)'
+        beginCaptures:
+            3: name: 'entity.name.tag.sleet'
+            4: name: 'entity.other.attribute-name.sleet'
+        end: '^(?!(\\1\\s)|\\s*$)'
+        patterns: [
+            include: '#line-end-with-dot'
+        ,
+            include: 'source.js'
+        ]
