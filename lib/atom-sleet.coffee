@@ -8,7 +8,7 @@ module.exports = AtomSleet =
         compileUse:
             type: 'string'
             default: 'sleet'
-            enmu: ['sleet', 'sleet-handlebars']
+            enum: ['sleet', 'sleet-handlebars']
         handlebarsBlockHelpers:
             type: 'array'
             default: []
@@ -44,7 +44,9 @@ module.exports = AtomSleet =
         return unless isSleet activeEditor
         file = activeEditor.getPath()
         return unless haveCompiledFile file
-        compileToFile activeEditor
+        result = compileToFile activeEditor
+        if result isnt true and not @sleetView
+            atom.notifications.addError result.message, detail: result.stack
 
     compile: ->
         activeEditor = atom.workspace.getActiveTextEditor()

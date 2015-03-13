@@ -17,10 +17,15 @@ exports.haveCompiledFile = (file) ->
     return false
 
 exports.compileToFile = (editor) ->
-    compiled = compileIt editor
+    try
+        compiled = compileIt editor
+    catch e
+        return e
+
     file = editor.getPath()
     target = path.join path.dirname(file), path.basename(file, path.extname(file)) + '.' + compiled.ext
     fs.writeFileSync target, compiled.result, 'utf-8'
+    true
 
 exports.compileToEditor = (source, dest) ->
     try

@@ -2,6 +2,8 @@ scopeName: 'source.sleet'
 name: 'Sleet'
 fileTypes: ['sleet', 'st']
 patterns: [
+    match: '\\s*\\.\\s*$'
+,
     match: '[^\\w\\|=+\'\"\\s():>#&@$_.-]'
     name: 'invalid.illegal.sleet'
 ,
@@ -81,7 +83,7 @@ repository:
         name: 'entity.name.attribute.sleet'
 
     'line-end-with-dot':
-        begin: '\\G(?=\\S)'
+        begin: '\\G'
         end: '\\.\\s*$'
         patterns: [
             include: '#tag'
