@@ -4,6 +4,9 @@ fileTypes: ['sleet', 'st']
 patterns: [
     match: '\\s*\\.\\s*$'
 ,
+    match: '^#!\\s*(.*)$'
+    name: 'comment.line.shebang.sleet'
+,
     match: '[^\\w\\|=+\'\"\\s():>#&@$_.-]'
     name: 'invalid.illegal.sleet'
 ,

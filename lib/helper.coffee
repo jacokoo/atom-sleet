@@ -3,8 +3,6 @@ handlebars = require 'sleet-handlebars'
 path = require 'path'
 fs = require 'fs'
 
-config = exports.sleetConfig = (key) -> atom.config.get "atom-sleet.#{key}"
-
 exports.isSleet = (editor) -> editor.getGrammar().scopeName is 'source.sleet'
 
 exports.haveCompiledFile = (file) ->
@@ -13,7 +11,7 @@ exports.haveCompiledFile = (file) ->
     name = path.basename file, path.extname(file)
     for file in fs.readdirSync dir when file isnt filename
         ext = path.extname file
-        return true if path.basename(file, ext) is name and (ext is '.html' or ext is '.js')
+        return true if path.basename(file, ext) is name
     return false
 
 exports.compileToFile = (editor) ->
@@ -23,48 +21,39 @@ exports.compileToFile = (editor) ->
         return e
 
     file = editor.getPath()
-    target = path.join path.dirname(file), path.basename(file, path.extname(file)) + '.' + compiled.ext
-    fs.writeFileSync target, compiled.result, 'utf-8'
+    target = path.join path.dirname(file), path.basename(file, path.extname(file)) + '.' + compiled.extension
+    fs.writeFileSync target, compiled.content, 'utf-8'
     true
 
 exports.compileToEditor = (source, dest) ->
     try
         compiled = compileIt source
     catch e
-        compiled = result: e.stack
+        compiled = content: e.stack
 
-    dest.setText compiled.result
-    if compiled.ext
+    dest.setText compiled.content
+    if compiled.extension
         dest.setGrammar atom.grammars.selectGrammar("hello.#{compiled.ext}")
 
 compileIt = (editor) ->
     text = editor.getText()
     file = editor.getPath()
 
-    if config('compileUse') is 'sleet-handlebars'
-        handlebarsCompile text, file
-    else
-        sleetCompile text, file
+    sleetCompile text, file
+
+getPackageConfig = (file) ->
+    root = path.resolve path.dirname(file)
+    while path.dirname(root) isnt root
+        pkg = path.join(root, 'package.json')
+        if fs.existsSync(pkg)
+            console.log require(pkg)
+            return require(pkg)?.sleet
+        root = path.dirname(root)
+    null
 
 sleetCompile = (input, file) ->
-    result: sleet.compile input, filename: file
-    ext: 'html'
 
-handlebarsCompile = (input, file) ->
-    precompile = config 'handlebarsPrecompile'
-    amd = config 'handlebarsPrecompileUseAmd'
-    commonjs = config 'handlebarsPrecompileUseCommonJs'
-
-    options =
-        filename: file
-        blocks: config 'handlebarsBlockHelpers'
-        inlineBlocks: config 'handlebarsInlineHelpers'
-
-    if precompile
-        options.precompile =
-            amd: amd
-            commonjs: if commonjs then 'handlebars' else false
-            name: path.basename file
-
-    result: handlebars.compile input, options
-    ext: if precompile then 'js' else 'html'
+    options = getPackageConfig(file) or {}
+    console.log options, 'input'
+    options.filename = file
+    sleet.compile input, options

@@ -1,30 +1,9 @@
 AtomSleetView = require './atom-sleet-view'
-{sleetConfig, isSleet, compileToFile, haveCompiledFile} = require './helper'
+{isSleet, compileToFile, haveCompiledFile} = require './helper'
 {CompositeDisposable} = require 'atom'
 path = require 'path'
 
 module.exports = AtomSleet =
-    config:
-        compileUse:
-            type: 'string'
-            default: 'sleet'
-            enum: ['sleet', 'sleet-handlebars']
-        handlebarsBlockHelpers:
-            type: 'array'
-            default: []
-        handlebarsInlineHelpers:
-            type: 'array'
-            default: []
-        handlebarsPrecompile:
-            type: 'boolean'
-            default: false
-        handlebarsPrecompileUseAmd:
-            type: 'boolean'
-            default: false
-        handlebarsPrecompileUseCommonJs:
-            type: 'boolean'
-            default: false
-
     activate: (state) ->
         @subscriptions = new CompositeDisposable()
 
