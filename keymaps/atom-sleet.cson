@@ -1,2 +1,2 @@
 'atom-workspace':
-    'ctrl-c ctrl-c': 'atom-sleet:compile'
+    'alt-j alt-j': 'atom-sleet:compile'
