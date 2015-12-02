@@ -33,7 +33,7 @@ exports.compileToEditor = (source, dest) ->
 
     dest.setText compiled.content
     if compiled.extension
-        dest.setGrammar atom.grammars.selectGrammar("hello.#{compiled.ext}")
+        dest.setGrammar atom.grammars.selectGrammar("hello.#{compiled.extension}")
 
 compileIt = (editor) ->
     text = editor.getText()
@@ -52,8 +52,6 @@ getPackageConfig = (file) ->
     null
 
 sleetCompile = (input, file) ->
-
     options = getPackageConfig(file) or {}
-    console.log options, 'input'
     options.filename = file
     sleet.compile input, options

@@ -12,11 +12,12 @@ module.exports = AtomSleet =
         @subscriptions.add atom.commands.add 'atom-workspace', 'core:save': => @whenDidSave()
 
         @subscriptions.add atom.workspace.addOpener (uri) =>
-            editor = if uri is 'atom-sleet://previewer' then @sleetView else null
+            editor = if uri is 'atom-sleet://previewer' then AtomSleetView.get() else null
             editor
 
     deactivate: ->
         @subscriptions.dispose()
+        AtomSleetView.destory()
 
     whenDidSave: ->
         activeEditor = atom.workspace.getActiveTextEditor()
@@ -24,8 +25,9 @@ module.exports = AtomSleet =
         file = activeEditor.getPath()
         return unless haveCompiledFile file
         result = compileToFile activeEditor
-        if result isnt true and not @sleetView
+        if result isnt true and not AtomSleetView.exists()
             atom.notifications.addError result.message, detail: result.stack
+        AtomSleetView.create(activeEditor) if AtomSleetView.exists()
 
     compile: ->
         activeEditor = atom.workspace.getActiveTextEditor()
@@ -35,15 +37,8 @@ module.exports = AtomSleet =
         @preview activeEditor
 
     preview: (editor) ->
-        return @sleetView.setSourceEditor editor if @sleetView
-
-        @sleetView = new AtomSleetView({})
-        listener = @sleetView.onDidDestroy =>
-            @sleetView = null
-            listener.dispose()
-
         atom.workspace.open 'atom-sleet://previewer',
             split: 'right'
             activatePane: true
         .then =>
-            @sleetView.setSourceEditor editor
+            AtomSleetView.create(editor)

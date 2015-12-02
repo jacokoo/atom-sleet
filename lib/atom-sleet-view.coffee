@@ -1,28 +1,32 @@
 {TextEditor} = require 'atom'
 {compileToEditor, isSleet} = require './helper'
 
-module.exports = class AtomSleetView extends TextEditor
-    constructor: ->
-        super
-        @listener = atom.commands.add 'atom-workspace', 'core:save': =>
-            @setSourceEditor atom.workspace.getActiveTextEditor()
+view = null
+targetChangeListener = null
+viewDisposedListener = null
+changeEditor = (editor) ->
+    targetChangeListener.dispose() if targetChangeListener
+    targetChangeListener = editor.onDidSave => compileToEditor(editor, view)
+    compileToEditor editor, view
 
-    getTitle: ->
-        'Sleet Preview' + (if @source then ' - ' + @source.getTitle() else '')
+createView = ->
+    v = atom.workspace.buildTextEditor()
+    viewDisposedListener = v.onDidDestroy ->
+        targetChangeListener?.dispose()
+        viewDisposedListener?.dispose()
+        view = null;
+    v
 
-    setSourceEditor: (editor) ->
+module.exports =
+    create: (editor) ->
+        view = createView() if not view
         return unless editor and isSleet(editor)
-        return if editor is @source
+        changeEditor editor
+        view
 
-        if @sourceListener
-            @sourceListener.dispose()
-            @sourceListener = null
+    destory: ->
+        view?.dispose()
 
-        @source = editor
-        @sourceListener = @source.onDidSave => compileToEditor @source, @
-        compileToEditor @source, @
+    exists: -> view isnt null
 
-    destroyed: ->
-        @sourceListener?.dispose()
-        @listener.dispose()
-        super
+    get: -> view or= createView()
