@@ -1,4 +1,11 @@
 '.source.sleet':
     editor:
         commentStart: '# '
-        decreaseIndentPattern: '^\\s*\\)'
+        increaseIndentPattern: '(?x)
+              \\{ [^}"\']* $
+            | \\[ [^\\]"\']* $
+            | \\( [^)"\']* $
+            '
+        decreaseIndentPattern: '(?x)
+            ^ \\s* (\\s* /[*] .* [*]/ \\s*)* [}\\])]
+            '
