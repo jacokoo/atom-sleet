@@ -26,7 +26,7 @@ repository:
         end: '^(?!\\1|$)'
         name: 'comment.block.sleet'
     tag:
-        begin: '^(\\s*)([\\w$@_-]*)(([.#][\\w$@_-]+)*)'
+        begin: '^(\\s*)(@?[\\w$_-]*)(([.#]@?[\\w$_-]+)*)'
         end: '^(?!\\1\\s+|$)'
         captures:
             2: name: 'entity.name.tag.sleet'
@@ -43,14 +43,21 @@ repository:
             include: '#tag'
         ,
             include: '#inline_tag'
+        ,
+            include: '#tag_extra'
         ]
 
     inline_tag:
-        match: '([:>+])([\\w$@_-]*)(([.#][\\w$@_-]+)*)'
+        match: '([:>+])\\s*(@?[\\w$_-]*)(([.#][\\w$@_-]+)*)'
         captures:
             1: name: 'keyword.control.sleet'
             2: name: 'entity.name.tag.sleet'
             3: name: 'entity.other.attribute-name.sleet'
+
+    tag_extra:
+        match: '(?<=\\S)(@(?:[\\w$@_-]*))(?=\\S|$)'
+        name: 'keyword.control.sleet'
+
 
     attribute:
         begin: '\\('
@@ -63,7 +70,13 @@ repository:
             include: '#attribute_key'
         ,
             include: '#attribute_value'
+        ,
+            include: '#namespace'
         ]
+
+    namespace:
+        match: '(\\w*)\\:(?=\\S)'
+        captures: 1: name: 'keyword.control.sleet'
 
     attribute_value:
         patterns: [
@@ -84,7 +97,7 @@ repository:
         ]
 
     unquoted:
-        match: '([\\w$@_-]+)(?=(\\s|\\)))'
+        match: '([\\.\\w$@_-]+)(?=(\\s|\\)))'
         name: 'string.unquoted.sleet'
 
     single_string:
@@ -132,6 +145,7 @@ repository:
     constant:
         match: '\\b(true|false|null)\\b'
         name: 'constant.language.sleet'
+
     number:
         match: '-?(?=[1-9]|0(?!\\d))\\d+(\\.\\d+)?([eE][+-]?\\d+)?'
         name: 'constant.numeric.sleet'
