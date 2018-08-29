@@ -119,7 +119,7 @@ repository:
         ]
 
     attribute_key:
-        match: '\\s*([\\w$@_-]*)\\s*(=)'
+        match: '\\s*([\\w$@_-]*)\\s*(=)(?!=)'
         captures:
             1: name: 'entity.other.attribute-name.sleet'
             2: name: 'punctuation.definition.attribute.equals.sleet'
@@ -165,7 +165,7 @@ repository:
             include: '#double_string'
         ]
     unquoted:
-        match: '([\\.\\w$@_-]+)(?=(\\s|\\)|,))'
+        match: '([\\./\\w$@_-]+)(?=(\\s|\\)|,))'
         name: 'support.type.variable.sleet'
 
     single_string:

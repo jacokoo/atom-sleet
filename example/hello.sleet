@@ -60,7 +60,7 @@ head
 view
     section(class='main')@if(todos.length) afsfds
         input.toggle-all(type='checkbox' id='toggle-all' checked=allDone)(
-            action:change=toggleAll(completed=this.checked)
+            action:change=toggleAll(completed=../this.checked)
         )
         label(for='toggle-all')&setting(todo.length)
         ul.todo-list
