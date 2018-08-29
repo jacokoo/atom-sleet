@@ -5,27 +5,11 @@ patterns: [
     match: '#!.*'
     name: 'comment.line.shebang.sleet'
 ,
-    include: '#comment_line'
-,
-    include: '#comment_block'
-,
-    include: '#comment_block2'
+    include: '#comment'
 ,
     include: '#tag'
-
 ]
 repository:
-    comment_line:
-        match: '^\\s*#\\s+.*'
-        name: 'comment.line.sleet'
-    comment_block:
-        begin: '^(\\s*)#\\.\\s*$'
-        end: '^(?!\\1\\s+|$)'
-        name: 'comment.block.sleet'
-    comment_block2:
-        begin: '^(\\s*)#\\.\\.\\s*$'
-        end: '^(?!\\1|$)'
-        name: 'comment.block.sleet'
     tag:
         begin: '^(\\s*)(@?[\\w$_-]*)(([.#]@?[\\w$_-]+)*)'
         end: '^(?!\\1\\s+|$)'
@@ -33,6 +17,8 @@ repository:
             2: name: 'entity.name.tag.sleet'
             3: name: 'entity.other.attribute-name.sleet'
         patterns: [
+            include: '#dynamic_text'
+        ,
             include: '#one_dot'
         ]
     tag2:
@@ -42,6 +28,8 @@ repository:
             2: name: 'entity.name.tag.sleet'
             3: name: 'entity.other.attribute-name.sleet'
         patterns: [
+            include: '#dynamic_text'
+        ,
             include: '#two_dot'
         ]
 
@@ -56,6 +44,55 @@ repository:
         match: '(?<=\\S)(@(?:[\\w$@_-]*))(?=\\S|$)'
         name: 'keyword.control.sleet'
 
+    one_dot:
+        begin: '\\G'
+        end: '\\.\\s*$'
+        patterns: [
+            include: '#comment_block2'
+        ,
+            include: '#comment'
+        ,
+            include: '#script2'
+        ,
+            include: '#script'
+        ,
+            include: '#style2'
+        ,
+            include: '#style'
+        ,
+            include: '#attribute'
+        ,
+            include: '#tag2'
+        ,
+            include: '#tag'
+        ,
+            include: '#inline_tag'
+        ,
+            include: '#tag_extra'
+        ]
+
+    two_dot:
+        begin: '\\G'
+        end: '\\.\\.\\s*$'
+
+    dynamic_text:
+        patterns: [
+            include: '#text_helper'
+        ,
+            include: '#text_identifier'
+        ]
+
+    text_identifier:
+        match: '(?<!\\\\)\\$(@?[\\.\\w$_-]*)'
+        name: 'entity.name.function.sleet'
+
+    text_helper:
+        begin: '(?<!\\\\)(\\$)(?=[^\\.]*\\()'
+        beginCaptures: 1: name: 'entity.name.function.sleet'
+        end: '(?<=\\))'
+        patterns: [
+            include: '#helper'
+        ]
 
     attribute:
         begin: '\\('
@@ -63,39 +100,72 @@ repository:
         end: '\\)'
         endCaptures: 0: name: 'punctuation.definition.attribute.start.sleet'
         patterns: [
-            include: '#helper'
-        ,
             include: '#attribute_key'
         ,
             include: '#attribute_value'
         ,
-            include: '#namespace'
+            match: '(\\w*)\\:(?=\\S)'
+            captures: 1: name: 'keyword.control.sleet'
         ]
-
-    namespace:
-        match: '(\\w*)\\:(?=\\S)'
-        captures: 1: name: 'keyword.control.sleet'
 
     attribute_value:
         patterns: [
             include: '#helper'
         ,
-            include: '#single_string'
-        ,
-            include: '#double_string'
-        ,
-            include: '#constant'
-        ,
-            include: '#number'
-        ,
-            include: '#unquoted'
+            include: '#normal_value'
         ,
             match: '\\+'
             name: 'keyword.control.sleet'
         ]
 
+    attribute_key:
+        match: '\\s*([\\w$@_-]*)\\s*(=)'
+        captures:
+            1: name: 'entity.other.attribute-name.sleet'
+            2: name: 'punctuation.definition.attribute.equals.sleet'
+
+    helper:
+        begin: '(\\w*)\\s*\\('
+        beginCaptures: 1: name: 'entity.name.function.sleet'
+        end: '\\)'
+        patterns: [
+            match: '\\s*\\|\\s*'
+            name: 'keyword.control.sleet'
+        ,
+            include: '#attribute_key'
+        ,
+            include: '#attribute_value'
+        ,
+            match: ','
+        ]
+
+    normal_value:
+        patterns: [
+            include: '#string'
+        ,
+            include: '#unquoted'
+        ,
+            include: '#constant'
+        ,
+            include: '#number'
+        ]
+
+    constant:
+        match: '\\b(true|false|null)\\b'
+        name: 'constant.language.sleet'
+
+    number:
+        match: '-?(?=[1-9]|0(?!\\d))\\d+(\\.\\d+)?([eE][+-]?\\d+)?'
+        name: 'constant.numeric.sleet'
+
+    string:
+        patterns: [
+            include: '#single_string'
+        ,
+            include: '#double_string'
+        ]
     unquoted:
-        match: '([\\.\\w$@_-]+)(?=(\\s|\\)))'
+        match: '([\\.\\w$@_-]+)(?=(\\s|\\)|,))'
         name: 'string.unquoted.sleet'
 
     single_string:
@@ -140,67 +210,25 @@ repository:
             name: 'invalid.illegal.unrecognized-string-escape.json'
         ]
 
-    constant:
-        match: '\\b(true|false|null)\\b'
-        name: 'constant.language.sleet'
-
-    number:
-        match: '-?(?=[1-9]|0(?!\\d))\\d+(\\.\\d+)?([eE][+-]?\\d+)?'
-        name: 'constant.numeric.sleet'
-
-    attribute_key:
-        match: '\\s*([\\w$@_-]*)\\s*(=)'
-        captures:
-            1: name: 'entity.other.attribute-name.sleet'
-            2: name: 'punctuation.definition.attribute.equals.sleet'
-
-    helper:
-        begin: '(\\w*)\\s*\\('
-        beginCaptures: 1: name: 'entity.name.function.sleet'
-        end: '\\)'
-        patterns: [
-            include: '#transform'
-        ,
-            include: '#attribute_key'
-        ,
-            include: '#attribute_value'
-        ]
-
-    transform:
-        match: '\\s*\\|\\s*'
-        name: 'keyword.control.sleet'
-
-    one_dot:
-        begin: '\\G'
-        end: '\\.\\s*$'
+    comment:
         patterns: [
             include: '#comment_line'
         ,
             include: '#comment_block'
         ,
-            include: '#comment_block2'
-        ,
-            include: '#script2'
-        ,
-            include: '#script'
-        ,
-            include: '#attribute'
-        ,
-            include: '#tag2'
-        ,
-            include: '#tag'
-        ,
-            include: '#inline_tag'
-        ,
-            include: '#tag_extra'
+            include: 'comment_block2'
         ]
-
-    two_dot:
-        begin: '\\G'
-        end: '\\.\\.\\s*$'
-        patterns: [
-            include: '#script'
-        ]
+    comment_line:
+        match: '^\\s*#\\s+.*'
+        name: 'comment.line.sleet'
+    comment_block:
+        begin: '^(\\s*)#\\.\\s*$'
+        end: '^(?!\\1\\s+|$)'
+        name: 'comment.block.sleet'
+    comment_block2:
+        begin: '^(\\s*)#\\.\\.\\s*$'
+        end: '^(?!\\1|$)'
+        name: 'comment.block.sleet'
 
     script:
         begin: '(\\s*).*(script)(?=.*\\.\\s*$)'
@@ -212,7 +240,6 @@ repository:
         ,
             include: 'source.js'
         ]
-
     script2:
         begin: '(\\s*).*(script)(?=.*\\.\\.\\s*$)'
         beginCaptures:
@@ -222,4 +249,25 @@ repository:
             include: '#one_dot'
         ,
             include: 'source.js'
+        ]
+
+    style:
+        begin: '(\\s*)(style)(?=.*\\.\\s*$)'
+        beginCaptures:
+            2: name: 'entity.name.tag.sleet'
+        end: '^(?!(\\1\\s)|\\s*$)'
+        patterns: [
+            include: '#one_dot'
+        ,
+            include: 'source.css'
+        ]
+    style2:
+        begin: '(\\s*)(style)(?=.*\\.\\.\\s*$)'
+        beginCaptures:
+            2: name: 'entity.name.tag.sleet'
+        end: '^(?!\\1|$)'
+        patterns: [
+            include: '#one_dot'
+        ,
+            include: 'source.css'
         ]

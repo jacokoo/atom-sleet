@@ -5,7 +5,7 @@
     more
         comment
 
-a
+comment
     # comment
     #.
         more comment
@@ -15,15 +15,47 @@ a
     and
         more comment
 
-a.
+style.
+    .input {
+        color: red;
+    }
+
+indent
+    style..
+    .input {
+        color: red
+    }
+
+div
+    a(style='abc').
+        .input {
+            color: red
+        }
+
+script.
+    var a = 10
+
+hello
+    script.
+        var a = 10
+    script..
+    var a = 10
+
+one-dot.
     jkjdsj
-        jkj
+        $jkj.a
       fds
-c
-    cfdsab..
-    backslash
+text
+    two-dot..
+    back$slash(ah jfdksal a=1 a | 2)
     jkds
       jfkds
+
+head
+    style..
+        .input {
+            background-color: red;
+        }
 
 view
     section(class='main')@if(todos.length) afsfds
@@ -32,7 +64,7 @@ view
         )
         label(for='toggle-all')
         ul.todo-list
-            li(class=if(todo.completed 'completed') + if(todo eq editing 'editing'))@each(filtered as todo)
+            li(class=if(todo.completed 'completed') + if(todo == editing 'editing'))@each(filtered as todo)
                 .view
                     input.toggle(type='checkbox' checked=todo.completed)(
                         action:change = toggle(id=todo.id checked=this.checked)
