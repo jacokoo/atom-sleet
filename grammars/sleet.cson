@@ -41,7 +41,7 @@ repository:
             3: name: 'entity.other.attribute-name.sleet'
 
     tag_extra:
-        match: '(?<=\\S)(@(?:[\\w$@_-]*))(?=\\S|$)'
+        match: '(?<=\\S)([@|&](?:[\\w$@_-]*))(?=\\S|$)'
         name: 'keyword.control.sleet'
 
     one_dot:
@@ -166,7 +166,7 @@ repository:
         ]
     unquoted:
         match: '([\\.\\w$@_-]+)(?=(\\s|\\)|,))'
-        name: 'string.unquoted.sleet'
+        name: 'support.type.variable.sleet'
 
     single_string:
         begin: '\''
