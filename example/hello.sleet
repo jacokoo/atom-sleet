@@ -46,6 +46,11 @@ one-dot.
         $jkj.a
       fds
 text
+    text a $a kds
+    | f$dsfdsa $jkfds
+    |
+        fdsajk$af(fdsa)
+
     two-dot..
     back$slash(ah jfdksal a=1 a | 2)
     jkds
@@ -53,9 +58,9 @@ text
 
 head
     style..
-        .input {
-            background-color: red;
-        }
+    .input {
+        background-color: red;
+    }
 
 view
     section(class='main')@if(todos.length) afsfds

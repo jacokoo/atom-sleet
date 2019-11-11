@@ -7,6 +7,10 @@ patterns: [
 ,
     include: '#comment'
 ,
+    include: '#pipeline'
+,
+    include: '#pipeline_block'
+,
     include: '#tag'
 ]
 repository:
@@ -46,11 +50,16 @@ repository:
 
     one_dot:
         begin: '\\G'
-        end: '\\.\\s*$'
+        end: '\\.$'
+        endCaptures: 0: name: 'keyword.control.sleet'
         patterns: [
             include: '#comment_block2'
         ,
             include: '#comment'
+        ,
+            include: '#pipeline'
+        ,
+            include: '#pipeline_block'
         ,
             include: '#script2'
         ,
@@ -73,7 +82,26 @@ repository:
 
     two_dot:
         begin: '\\G'
-        end: '\\.\\.\\s*$'
+        end: '\\.\\.$'
+        endCaptures: 0: name: 'keyword.control.sleet'
+
+    pipeline:
+        begin: '^(\\s*)(\\|)\\s+(?!\\.)'
+        end: '$'
+        captures: 2: name: 'entity.name.tag.sleet'
+        patterns: [
+            include: '#dynamic_text'
+        ]
+
+    pipeline_block:
+        begin: '^(\\s*)(\\|)(\\.)$'
+        end: '^(?!\\1\\s+|$)'
+        captures:
+            2: name: 'entity.name.tag.sleet'
+            3: name: 'keyword.control.sleet'
+        patterns: [
+            include: '#dynamic_text'
+        ]
 
     dynamic_text:
         patterns: [
